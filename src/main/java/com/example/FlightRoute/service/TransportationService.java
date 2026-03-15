@@ -5,6 +5,7 @@ package com.example.FlightRoute.service;
 import com.example.FlightRoute.dto.CreateTransportationDto;
 import com.example.FlightRoute.dto.UpdateTransportationDto;
 import com.example.FlightRoute.exception.InvalidRequest;
+import com.example.FlightRoute.model.Day;
 import com.example.FlightRoute.model.Location;
 import com.example.FlightRoute.model.Transportation;
 import com.example.FlightRoute.repository.TransportationRepository;
@@ -31,11 +32,15 @@ public class TransportationService {
             throw new InvalidRequest("origin and destination can not be same of a transportation");
         }
 
+        List<Day> days = createTransportationDto.getDays().stream()
+                .map(Day::valueOf).toList();
+
         Location from = locationService.findById(createTransportationDto.getFromId());
         Location to = locationService.findById(createTransportationDto.getToId());
         return transportationRepository.save(Transportation.builder()
                 .from(from)
                 .to(to).type(createTransportationDto.getType())
+                .operatingDays(Day.toByte(days))
                 .build());
     }
 

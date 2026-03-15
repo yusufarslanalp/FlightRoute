@@ -26,6 +26,7 @@ public class Transportation {
 	@ManyToOne
 	@JoinColumn(name = "to_id")
 	private Location to;
+	private byte operatingDays;
 
 	public boolean isThereChange(Transportation second){
 		if(this.to.getId().equals(second.getFrom().getId())){

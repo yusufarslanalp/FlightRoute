@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 
 import jakarta.validation.constraints.NotNull;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,4 +21,5 @@ public class CreateTransportationDto {
     private Long toId;
     @NotNull
     private TransportationType type;
+    private List<String> days;
 }
