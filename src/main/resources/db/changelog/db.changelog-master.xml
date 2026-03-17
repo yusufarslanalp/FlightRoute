@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1" author="yusufarslanalp">
+        <sql><![CDATA[
+CREATE TABLE users
+(
+    id            BIGINT AUTO_INCREMENT PRIMARY KEY,
+    username      VARCHAR(255) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    role          VARCHAR(32)  NOT NULL
+);
+
+INSERT INTO users (id, password_hash, role, username)
+VALUES
+    (1, '$2a$10$eEBGszE.GTZXlKvfhpmre.437thNTUSn5M.rff3.7Zai8fyfrBWBS', 'ADMIN', 'admin'),
+    (2, '$2a$10$Em.OFvCM4VwpcaEXu7ZEIeq6iC2Bwih7h0/xc2fPTlYzrb4T4ybMG', 'AGENCY', 'agency');
+        ]]></sql>
+    </changeSet>
+
+</databaseChangeLog>
