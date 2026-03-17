@@ -26,7 +26,7 @@ public class LocationController {
     private final LocationService locationService;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','AGENCY')")
     public List<Location> getAllLocations(){
         return locationService.getLocations();
     }

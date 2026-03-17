@@ -19,14 +19,14 @@ public class OpenAPIConfig {
         devServer.setDescription("Server URL in Development environment");
 
         Contact contact = new Contact();
-        contact.setName("SkyRoute API");
+        contact.setName("FlightRoute API");
         contact.setEmail("");
 
         Info info = new Info()
-                .title("SkyRoute API Documentation")
+                .title("FlightRoute API Documentation")
                 .version("1.0")
                 .contact(contact)
-                .description("This API exposes endpoints for SkyRoute application.");
+                .description("This API exposes endpoints for FlightRoute application.");
 
         return new OpenAPI()
                 .info(info)
