@@ -7,19 +7,73 @@
 
     <changeSet id="1" author="yusufarslanalp">
         <sql><![CDATA[
-CREATE TABLE users
-(
-    id            BIGINT AUTO_INCREMENT PRIMARY KEY,
-    username      VARCHAR(255) NOT NULL UNIQUE,
-    password_hash VARCHAR(255) NOT NULL,
-    role          VARCHAR(32)  NOT NULL
-);
+            CREATE TABLE users
+            (
+                id            BIGINT AUTO_INCREMENT PRIMARY KEY,
+                username      VARCHAR(255) NOT NULL UNIQUE,
+                password_hash VARCHAR(255) NOT NULL,
+                role          VARCHAR(32)  NOT NULL
+            );
 
-INSERT INTO users (id, password_hash, role, username)
-VALUES
-    (1, '$2a$10$eEBGszE.GTZXlKvfhpmre.437thNTUSn5M.rff3.7Zai8fyfrBWBS', 'ADMIN', 'admin'),
-    (2, '$2a$10$Em.OFvCM4VwpcaEXu7ZEIeq6iC2Bwih7h0/xc2fPTlYzrb4T4ybMG', 'AGENCY', 'agency');
+            INSERT INTO users (id, password_hash, role, username)
+            VALUES
+                (1, '$2a$10$eEBGszE.GTZXlKvfhpmre.437thNTUSn5M.rff3.7Zai8fyfrBWBS', 'ADMIN', 'admin'),
+                (2, '$2a$10$Em.OFvCM4VwpcaEXu7ZEIeq6iC2Bwih7h0/xc2fPTlYzrb4T4ybMG', 'AGENCY', 'agency');
         ]]></sql>
     </changeSet>
+
+    <changeSet id="2" author="yusufarslanalp">
+        <sql><![CDATA[
+            create table location
+            (
+                id            bigint auto_increment
+                primary key,
+                city          varchar(255) null,
+                country       varchar(255) null,
+                location_code varchar(255) null,
+                name          varchar(255) null
+            );
+
+
+            INSERT INTO location (id, city, country, location_code, name)
+                VALUES (3, 'İstanbul', 'Turkey', '', 'Taksim Square');
+            INSERT INTO location (id, city, country, location_code, name)
+                VALUES (4, 'İstanbul', 'Turkey', 'IST', 'İstanbul Airport');
+            INSERT INTO location (id, city, country, location_code, name)
+                VALUES (5, 'İstanbul', 'Turkey', 'SAW', 'İstanbul Sabiha Gökçen Airport');
+            INSERT INTO location (id, city, country, location_code, name)
+                VALUES (6, 'London', 'England', 'LHR', 'London Heathrow Airport');
+            INSERT INTO location (id, city, country, location_code, name)
+                VALUES (7, 'London', 'England', '', 'Webley Stadium');
+            ]]></sql>
+    </changeSet>
+
+    <changeSet id="3" author="yusufarslanalp">
+        <sql><![CDATA[
+            create table transportation
+            (
+                id             bigint auto_increment
+                primary key,
+                type           varchar(255) null,
+                from_id        bigint       null,
+                to_id          bigint       null,
+                operating_days tinyint      not null,
+                constraint FK_transportation_to_location
+                    foreign key (to_id) references location (id),
+                constraint FK_transportation_from_location
+                    foreign key (from_id) references location (id)
+            );
+
+            INSERT INTO transportation (id, type, from_id, to_id, operating_days) VALUES (2, 'UBER', 3, 4, 127);
+            INSERT INTO transportation (id, type, from_id, to_id, operating_days) VALUES (3, 'SUBWAY', 3, 4, 127);
+            INSERT INTO transportation (id, type, from_id, to_id, operating_days) VALUES (4, 'BUS', 3, 5, 127);
+            INSERT INTO transportation (id, type, from_id, to_id, operating_days) VALUES (5, 'FLIGHT', 4, 6, 127);
+            INSERT INTO transportation (id, type, from_id, to_id, operating_days) VALUES (6, 'FLIGHT', 5, 6, 127);
+            INSERT INTO transportation (id, type, from_id, to_id, operating_days) VALUES (7, 'BUS', 6, 7, 127);
+            INSERT INTO transportation (id, type, from_id, to_id, operating_days) VALUES (18, 'UBER', 6, 7, 127);
+
+            ]]></sql>
+    </changeSet>
+
 
 </databaseChangeLog>
