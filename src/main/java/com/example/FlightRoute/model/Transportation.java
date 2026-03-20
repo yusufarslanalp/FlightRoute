@@ -8,13 +8,17 @@ import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
+
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Table(name = "transportation")
-public class Transportation {
+public class Transportation implements Serializable {
+	private static final long serialVersionUID = -3211280745040246683L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;

@@ -10,11 +10,15 @@ import com.example.FlightRoute.model.TransportationType;
 import com.example.FlightRoute.repository.LocationRepository;
 import com.example.FlightRoute.repository.TransportationRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.example.FlightRoute.config.CacheConfig.FIVE_MIN;
+
 
 @Component
 @AllArgsConstructor
@@ -22,6 +26,7 @@ public class RouteService {
     private final TransportationRepository transportationRepository;
     private final LocationRepository locationRepository;
 
+    @Cacheable(value = FIVE_MIN, key = "#fromId + '-' + #toId")
     public List<RouteDto> getRoutes(Long fromId, Long toId) {
         if (fromId.equals(toId)) {
             throw new InvalidRequest("origin and destination can not be same of a route");
