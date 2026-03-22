@@ -29,4 +29,11 @@ public enum Day {
         }
         return operatingDays;
     }
+
+    public static List<String> fromByteToStringList(byte operatingDays) {
+        return List.of(values()).stream()
+                .filter(day -> (operatingDays & day.getBitmask()) != 0)
+                .map(Enum::name)
+                .toList();
+    }
 }

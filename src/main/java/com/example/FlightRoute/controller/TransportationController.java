@@ -2,7 +2,9 @@ package com.example.FlightRoute.controller;
 
 
 import com.example.FlightRoute.dto.CreateTransportationDto;
+import com.example.FlightRoute.dto.TransportationDto;
 import com.example.FlightRoute.dto.UpdateTransportationDto;
+import com.example.FlightRoute.model.Day;
 import com.example.FlightRoute.model.Transportation;
 import com.example.FlightRoute.service.TransportationService;
 import jakarta.validation.Valid;
@@ -30,7 +32,7 @@ public class TransportationController {
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public List<Transportation> getTransportations(){
+    public List<TransportationDto> getTransportations(){
         return transportationService.getTransportations();
     }
 

@@ -3,6 +3,7 @@ package com.example.FlightRoute.service;
 
 
 import com.example.FlightRoute.dto.CreateTransportationDto;
+import com.example.FlightRoute.dto.TransportationDto;
 import com.example.FlightRoute.dto.UpdateTransportationDto;
 import com.example.FlightRoute.exception.InvalidRequest;
 import com.example.FlightRoute.model.Day;
@@ -22,8 +23,16 @@ public class TransportationService {
     private final LocationService locationService;
 
 
-    public List<Transportation> getTransportations(){
-        return transportationRepository.findAll();
+    public List<TransportationDto> getTransportations(){
+        return transportationRepository.findAll().stream()
+                .map(transportation -> new TransportationDto(
+                        transportation.getId(),
+                        transportation.getType().name(),
+                        transportation.getFrom().getName(),
+                        transportation.getTo().getName(),
+                        Day.fromByteToStringList(transportation.getOperatingDays())
+                ))
+                .toList();
     }
 
     public Transportation saveTransportation(CreateTransportationDto createTransportationDto){
@@ -47,6 +56,8 @@ public class TransportationService {
     public Transportation updateTransportation(Long transportationId, UpdateTransportationDto updateTransportationDto){
         Transportation transportation = transportationRepository.findById(transportationId).get();
         transportation.setType(updateTransportationDto.getType());
+        transportation.setOperatingDays(Day.toByte(updateTransportationDto.getDays().stream()
+                .map(Day::valueOf).toList()));
         transportationRepository.save(transportation);
         return transportation;
     }

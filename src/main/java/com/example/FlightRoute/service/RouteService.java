@@ -4,6 +4,7 @@ package com.example.FlightRoute.service;
 import com.example.FlightRoute.dto.RouteDto;
 import com.example.FlightRoute.dto.RouteDtoConverter;
 import com.example.FlightRoute.exception.InvalidRequest;
+import com.example.FlightRoute.model.Day;
 import com.example.FlightRoute.model.Location;
 import com.example.FlightRoute.model.Transportation;
 import com.example.FlightRoute.model.TransportationType;
@@ -13,6 +14,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,8 +29,8 @@ public class RouteService {
     private final TransportationRepository transportationRepository;
     private final LocationRepository locationRepository;
 
-    @Cacheable(value = FIVE_MIN, key = "#fromId + '-' + #toId")
-    public List<RouteDto> getRoutes(Long fromId, Long toId) {
+    @Cacheable(value = FIVE_MIN, key = "#fromId + '-' + #toId + '-' + #date")
+    public List<RouteDto> getRoutes(Long fromId, Long toId, LocalDate date) {
         if (fromId.equals(toId)) {
             throw new InvalidRequest("origin and destination can not be same of a route");
         }
@@ -35,22 +38,25 @@ public class RouteService {
         Location from = locationRepository.findById(fromId).get();
         Location to = locationRepository.findById(toId).get();
 
-        List<Transportation> firstTransportations = transportationRepository.findByFrom(from);
-        List<Transportation> lastTransportations = transportationRepository.findByTo(to);
+        DayOfWeek dayOfWeek = date.getDayOfWeek();
+        Day day = getDayFromDayOfWeek(dayOfWeek);
+
+        List<Transportation> firstTransportations = filterByOperatingDay(transportationRepository.findByFrom(from), day);
+        List<Transportation> lastTransportations = filterByOperatingDay(transportationRepository.findByTo(to), day);
 
         List<List<Transportation>> routes = new ArrayList<>();
 
-        addRouteForDirectFlight(routes, from, to);
+        addRouteForDirectFlight(routes, from, to, day);
         addRoutesFor2Transportation(routes, firstTransportations, lastTransportations);
-        addRoutesFor3Transportation(routes, firstTransportations, lastTransportations);
+        addRoutesFor3Transportation(routes, firstTransportations, lastTransportations, day);
 
 
         return RouteDtoConverter.convert(routes);
     }
 
-    private void addRouteForDirectFlight(List<List<Transportation>> routes, Location from, Location to) {
-        List<Transportation> directFlights = transportationRepository
-                .findByFromAndToAndType(from, to, TransportationType.FLIGHT);
+    private void addRouteForDirectFlight(List<List<Transportation>> routes, Location from, Location to, Day day) {
+        List<Transportation> directFlights = filterByOperatingDay(
+                transportationRepository.findByFromAndToAndType(from, to, TransportationType.FLIGHT), day);
         if (directFlights.size() > 0) {
             routes.add(
                     Arrays.asList(directFlights.get(0))
@@ -82,7 +88,7 @@ public class RouteService {
 
     private void addRoutesFor3Transportation(List<List<Transportation>> routes,
                                              List<Transportation> firstTransportations,
-                                             List<Transportation> lastTransportations) {
+                                             List<Transportation> lastTransportations, Day day) {
         for (Transportation firsTransportation : firstTransportations) {
             for (Transportation lastTransportation : lastTransportations) {
 
@@ -90,9 +96,9 @@ public class RouteService {
                     continue;
                 }
 
-                List<Transportation> connector = transportationRepository
-                        .findByFromAndToAndType(firsTransportation.getTo(),
-                                lastTransportation.getFrom(), TransportationType.FLIGHT);
+                List<Transportation> connector = filterByOperatingDay(
+                        transportationRepository.findByFromAndToAndType(firsTransportation.getTo(),
+                                lastTransportation.getFrom(), TransportationType.FLIGHT), day);
 
                 if (connector.size() > 0) {
                     routes.add(
@@ -115,5 +121,24 @@ public class RouteService {
             return true;
         }
         return false;
+    }
+
+    private Day getDayFromDayOfWeek(DayOfWeek dayOfWeek) {
+        switch (dayOfWeek) {
+            case MONDAY: return Day.MONDAY;
+            case TUESDAY: return Day.TUESDAY;
+            case WEDNESDAY: return Day.WEDNESDAY;
+            case THURSDAY: return Day.THURSDAY;
+            case FRIDAY: return Day.FRIDAY;
+            case SATURDAY: return Day.SATURDAY;
+            case SUNDAY: return Day.SUNDAY;
+            default: throw new IllegalArgumentException("Invalid day of week: " + dayOfWeek);
+        }
+    }
+
+    private List<Transportation> filterByOperatingDay(List<Transportation> transportations, Day day) {
+        return transportations.stream()
+                .filter(t -> (t.getOperatingDays() & day.getBitmask()) != 0)
+                .toList();
     }
 }
