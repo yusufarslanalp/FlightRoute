@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,10 +30,12 @@ public class User {
     private Long id;
 
     @NotBlank
+    @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
     @Column(nullable = false, unique = true)
     private String username;
 
     @NotBlank
+    @Size(min = 6, message = "Password must be at least 6 characters long")
     @Column(nullable = false)
     private String passwordHash;
 

@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
@@ -15,7 +16,9 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class UpdateTransportationDto {
-    @NotNull
+    @NotNull(message = "Transportation type is required")
     private TransportationType type;
+    
+    @Size(max = 7, message = "Days list cannot contain more than 7 elements")
     private List<String> days;
 }
