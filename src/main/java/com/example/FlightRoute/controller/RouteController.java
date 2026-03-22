@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -30,7 +29,6 @@ public class RouteController {
                                           @RequestParam @NotNull Long toId,
                                           @RequestParam @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
     ) {
-        //LocalDate date = LocalDate.now();
         return routeService.getRoutes(fromId, toId, date);
     }
 }
