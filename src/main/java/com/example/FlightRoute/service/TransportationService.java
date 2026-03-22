@@ -35,7 +35,7 @@ public class TransportationService {
                 .toList();
     }
 
-    public Transportation saveTransportation(CreateTransportationDto createTransportationDto){
+    public TransportationDto saveTransportation(CreateTransportationDto createTransportationDto){
         if (createTransportationDto.getFromId()
                 .equals(createTransportationDto.getToId())) {
             throw new InvalidRequest("origin and destination can not be same of a transportation");
@@ -46,20 +46,35 @@ public class TransportationService {
 
         Location from = locationService.findById(createTransportationDto.getFromId());
         Location to = locationService.findById(createTransportationDto.getToId());
-        return transportationRepository.save(Transportation.builder()
+        Transportation transportation = transportationRepository.save(Transportation.builder()
                 .from(from)
                 .to(to).type(createTransportationDto.getType())
                 .operatingDays(Day.toByte(days))
                 .build());
+
+        return new TransportationDto(
+                transportation.getId(),
+                transportation.getType().name(),
+                transportation.getFrom().getName(),
+                transportation.getTo().getName(),
+                Day.fromByteToStringList(transportation.getOperatingDays())
+        );
     }
 
-    public Transportation updateTransportation(Long transportationId, UpdateTransportationDto updateTransportationDto){
+    public TransportationDto updateTransportation(Long transportationId, UpdateTransportationDto updateTransportationDto){
         Transportation transportation = transportationRepository.findById(transportationId).get();
         transportation.setType(updateTransportationDto.getType());
         transportation.setOperatingDays(Day.toByte(updateTransportationDto.getDays().stream()
                 .map(Day::valueOf).toList()));
         transportationRepository.save(transportation);
-        return transportation;
+
+        return new TransportationDto(
+                transportation.getId(),
+                transportation.getType().name(),
+                transportation.getFrom().getName(),
+                transportation.getTo().getName(),
+                Day.fromByteToStringList(transportation.getOperatingDays())
+        );
     }
 
     public void deleteTransportation(Long transportationId){

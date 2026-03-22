@@ -11,6 +11,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -43,7 +44,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 Jws<Claims> jws = jwtUtil.parseToken(token);
                 String username = jws.getBody().getSubject();
 
-                @SuppressWarnings("unchecked")
                 List<String> roles = Optional.ofNullable((List<String>) jws.getBody().get("roles"))
                         .orElse(Collections.emptyList());
 
@@ -54,7 +54,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(username, null, authorities);
-                authentication.setDetails(request);
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 

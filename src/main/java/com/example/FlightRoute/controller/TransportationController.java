@@ -4,8 +4,6 @@ package com.example.FlightRoute.controller;
 import com.example.FlightRoute.dto.CreateTransportationDto;
 import com.example.FlightRoute.dto.TransportationDto;
 import com.example.FlightRoute.dto.UpdateTransportationDto;
-import com.example.FlightRoute.model.Day;
-import com.example.FlightRoute.model.Transportation;
 import com.example.FlightRoute.service.TransportationService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -38,13 +36,13 @@ public class TransportationController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public Transportation createTransportation(@Valid @RequestBody CreateTransportationDto createTransportationDto){
+    public TransportationDto createTransportation(@Valid @RequestBody CreateTransportationDto createTransportationDto){
         return transportationService.saveTransportation(createTransportationDto);
     }
 
     @PutMapping("/{transportationId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public Transportation updateTransportation( @PathVariable @NotNull Long transportationId,
+    public TransportationDto updateTransportation( @PathVariable @NotNull Long transportationId,
             @Valid @RequestBody UpdateTransportationDto updateTransportationDto){
         return transportationService.updateTransportation(transportationId, updateTransportationDto);
     }
