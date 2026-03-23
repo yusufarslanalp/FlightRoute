@@ -79,8 +79,8 @@ class RouteServiceTest {
         List<RouteDto> routes = routeService.getRoutes(1L, 4L, MONDAY);
 
         assertThat(routes).hasSize(1);
-        assertThat(routes.get(0).getTransportations()).containsExactly(bus, flight, subway);
-        assertThat(routes.get(0).getFlightIndex()).isEqualTo(1);
+        assertThat(routes.getFirst().transportations()).containsExactly(bus, flight, subway);
+        assertThat(routes.getFirst().flightIndex()).isEqualTo(1);
     }
 
     @Test
@@ -216,8 +216,8 @@ class RouteServiceTest {
         List<RouteDto> routes = routeService.getRoutes(1L, 2L, MONDAY);
 
         assertThat(routes).hasSize(1);
-        assertThat(routes.get(0).getTransportations()).containsExactly(flight);
-        assertThat(routes.get(0).getFlightIndex()).isZero();
+        assertThat(routes.getFirst().transportations()).containsExactly(flight);
+        assertThat(routes.getFirst().flightIndex()).isZero();
     }
 
     @Test
@@ -251,8 +251,8 @@ class RouteServiceTest {
         List<RouteDto> routes = routeService.getRoutes(1L, 3L, MONDAY);
 
         assertThat(routes).hasSize(1);
-        assertThat(routes.get(0).getTransportations()).containsExactly(bus, flightLeg);
-        assertThat(routes.get(0).getFlightIndex()).isEqualTo(1);
+        assertThat(routes.getFirst().transportations()).containsExactly(bus, flightLeg);
+        assertThat(routes.getFirst().flightIndex()).isEqualTo(1);
     }
 
     @Test

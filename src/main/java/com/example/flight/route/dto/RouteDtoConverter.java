@@ -15,11 +15,7 @@ public class RouteDtoConverter {
         List<RouteDto> routeDtoList = new ArrayList<>();
         for(List<Transportation> route : routes){
             routeDtoList.add(
-                    RouteDto.builder()
-                            .id(id)
-                            .flightIndex(getFlightIndex(route))
-                            .transportations(route)
-                            .build()
+                new RouteDto(id, getFlightIndex(route), route)
             );
             id++;
         }

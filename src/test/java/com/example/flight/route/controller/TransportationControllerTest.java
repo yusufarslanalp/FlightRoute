@@ -3,6 +3,7 @@ package com.example.flight.route.controller;
 import com.example.flight.route.dto.CreateTransportationDto;
 import com.example.flight.route.dto.TransportationDto;
 import com.example.flight.route.dto.UpdateTransportationDto;
+import com.example.flight.route.model.TransportationType;
 import com.example.flight.route.service.TransportationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,9 +44,25 @@ class TransportationControllerTest {
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(transportationController).build();
         objectMapper = new ObjectMapper();
-        transportationDto = new TransportationDto();
-        createTransportationDto = new CreateTransportationDto();
-        updateTransportationDto = new UpdateTransportationDto();
+        transportationDto = new TransportationDto(
+                1L,
+                "BUS",
+                "Istanbul",
+                "Ankara",
+                List.of("MONDAY", "TUESDAY")
+        );
+
+        createTransportationDto = new CreateTransportationDto(
+                1L,
+                2L,
+                TransportationType.BUS,
+                List.of("MONDAY")
+        );
+
+        updateTransportationDto = new UpdateTransportationDto(
+                TransportationType.BUS,
+                List.of("MONDAY")
+        );
     }
 
     @Nested

@@ -32,9 +32,9 @@ class RouteDtoConverterTest {
         List<RouteDto> result = RouteDtoConverter.convert(List.of(List.of(flight)));
 
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getId()).isZero();
-        assertThat(result.get(0).getFlightIndex()).isZero();
-        assertThat(result.get(0).getTransportations()).containsExactly(flight);
+        assertThat(result.getFirst().id()).isZero();
+        assertThat(result.getFirst().flightIndex()).isZero();
+        assertThat(result.getFirst().transportations()).containsExactly(flight);
     }
 
     @Test
@@ -59,7 +59,7 @@ class RouteDtoConverterTest {
 
         List<RouteDto> result = RouteDtoConverter.convert(List.of(List.of(flight, bus)));
 
-        assertThat(result.get(0).getFlightIndex()).isZero();
+        assertThat(result.getFirst().flightIndex()).isZero();
     }
 
     @Test
@@ -84,7 +84,7 @@ class RouteDtoConverterTest {
 
         List<RouteDto> result = RouteDtoConverter.convert(List.of(List.of(bus, flight)));
 
-        assertThat(result.get(0).getFlightIndex()).isEqualTo(1);
+        assertThat(result.getFirst().flightIndex()).isEqualTo(1);
     }
 
     @Test
@@ -117,7 +117,7 @@ class RouteDtoConverterTest {
 
         List<RouteDto> result = RouteDtoConverter.convert(List.of(List.of(first, mid, last)));
 
-        assertThat(result.get(0).getFlightIndex()).isEqualTo(1);
-        assertThat(result.get(0).getId()).isZero();
+        assertThat(result.getFirst().flightIndex()).isEqualTo(1);
+        assertThat(result.getFirst().id()).isZero();
     }
 }

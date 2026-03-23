@@ -44,7 +44,7 @@ class RouteControllerTest {
         @Test
         @DisplayName("returns 200 and list of routes when all params are valid")
         void getRoutes_validParams_returns200() throws Exception {
-            RouteDto routeDto = new RouteDto();
+            RouteDto routeDto = new RouteDto(1, 100, List.of());
             when(routeService.getRoutes(1L, 2L, LocalDate.of(2025, 1, 1)))
                     .thenReturn(List.of(routeDto));
 

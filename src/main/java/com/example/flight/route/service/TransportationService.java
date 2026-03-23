@@ -36,19 +36,19 @@ public class TransportationService {
     }
 
     public TransportationDto saveTransportation(CreateTransportationDto createTransportationDto){
-        if (createTransportationDto.getFromId()
-                .equals(createTransportationDto.getToId())) {
+        if (createTransportationDto.fromId()
+                .equals(createTransportationDto.toId())) {
             throw new InvalidRequest("origin and destination can not be same of a transportation");
         }
 
-        List<Day> days = createTransportationDto.getDays().stream()
+        List<Day> days = createTransportationDto.days().stream()
                 .map(Day::valueOf).toList();
 
-        Location from = locationService.findById(createTransportationDto.getFromId());
-        Location to = locationService.findById(createTransportationDto.getToId());
+        Location from = locationService.findById(createTransportationDto.fromId());
+        Location to = locationService.findById(createTransportationDto.toId());
         Transportation transportation = transportationRepository.save(Transportation.builder()
                 .from(from)
-                .to(to).type(createTransportationDto.getType())
+                .to(to).type(createTransportationDto.type())
                 .operatingDays(Day.toByte(days))
                 .build());
 
@@ -63,8 +63,8 @@ public class TransportationService {
 
     public TransportationDto updateTransportation(Long transportationId, UpdateTransportationDto updateTransportationDto){
         Transportation transportation = transportationRepository.findById(transportationId).get();
-        transportation.setType(updateTransportationDto.getType());
-        transportation.setOperatingDays(Day.toByte(updateTransportationDto.getDays().stream()
+        transportation.setType(updateTransportationDto.type());
+        transportation.setOperatingDays(Day.toByte(updateTransportationDto.days().stream()
                 .map(Day::valueOf).toList()));
         transportationRepository.save(transportation);
 
